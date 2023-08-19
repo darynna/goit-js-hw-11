@@ -109,7 +109,7 @@ function loadMore() {
   }
   }).catch(er => {
     console.error("An error occurred:", er);
-      errorEndofPhotos.textContent = "An error occurred while fetching data.";
+      errorEndofPhotos.textContent = "We're sorry, but you've reached the end of search results.";
       loadmoreBtn.style.display = 'none';
   })
 
