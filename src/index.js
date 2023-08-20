@@ -1,6 +1,7 @@
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 import { fetchPhoto } from './api-photos.js';
+import { doMarkup } from "./markup.js";
 import Notiflix from 'notiflix';
 
 
@@ -10,7 +11,7 @@ const loadmoreBtn = document.querySelector(".load-more");
 const errorEndofPhotos = document.querySelector(".error-end")
 
 let page = 1;
-
+const lightbox = new SimpleLightbox('.gallery a');
 
 form.addEventListener('submit', onSubmit);
 
@@ -49,7 +50,7 @@ errorEndofPhotos.textContent = '';
     }
     else {
       Notiflix.Notify.success(`Hooray! We found ${totalAmount} images.`);
-      doMarkup(photos);
+      doMarkup(photos, gallery, lightbox);
       loadmoreBtn.style.display = 'block';
     }
 
@@ -60,36 +61,6 @@ errorEndofPhotos.textContent = '';
   }
   }
 
-
-function doMarkup(data) {
-
-    const markup = data.map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => {
-        return `<div class="photo-card">
-        <a class="gallery__link" href="${largeImageURL}">
-  <img class="gallery__image" src="${webformatURL}" alt="${tags}" loading="lazy" width="320"/>
-  </a>
-  <div class="info">
-    <p class="info-item">
-      <b>Likes</b></br>${likes}
-    </p>
-    <p class="info-item">
-      <b>Views</b></br>${views}
-    </p>
-    <p class="info-item">
-      <b>Comments</b></br>${comments}
-    </p>
-    <p class="info-item">
-      <b>Downloads</b></br>${downloads}
-    </p>
-  </div>
-</div>`
-    }).join('');
-
-  gallery.insertAdjacentHTML("beforeend", markup)
-
-  var lightbox = new SimpleLightbox('.gallery a');
-  lightbox.refresh()
-}
 
 loadmoreBtn.addEventListener('click', loadMore)
 
@@ -103,7 +74,7 @@ function loadMore() {
     errorEndofPhotos.textContent = "We're sorry, but you've reached the end of search results.";
     loadmoreBtn.style.display = 'none';
   } else {
-    doMarkup(photos);
+    doMarkup(photos, gallery, lightbox);
     loadmoreBtn.style.display = 'block';
 
   }
